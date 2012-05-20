@@ -1,8 +1,39 @@
 module Sashimi
   def all?
+    each do |item|
+      return false unless block_given? ? yield(item) : item
+    end
+    return true
   end
 
   def any?
+    each do |item|
+      return true if block_given? ? yield(item) : item
+    end
+    return false
+  end
+
+  def none?
+    each do |item|
+      return false if block_given? ? yield(item) : item
+    end
+    return true
+  end
+
+  def one?
+    result = nil
+    each do |item|
+      if block_given? ? yield(item) : item
+        case result
+        when nil
+          result = true
+        when true
+          return false
+        end
+      end
+    end
+    return false unless result
+    return result
   end
 
   def chunk
@@ -99,12 +130,6 @@ module Sashimi
   end
 
   def minmax_by
-  end
-
-  def none?
-  end
-
-  def one?
   end
 
   def partition
