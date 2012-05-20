@@ -93,7 +93,14 @@ module Sashimi
   def flat_map
   end
 
-  def grep
+  def grep(pattern)
+    result = []
+    each do |item|
+      if pattern === item
+        result << (block_given? ? yield(item) : item)
+      end
+    end
+    return result
   end
 
   def group_by
