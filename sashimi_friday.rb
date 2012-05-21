@@ -1,4 +1,4 @@
-module Sashimi
+module SashimiFriday
   def all?
     each do |item|
       return false unless block_given? ? yield(item) : item
