@@ -45,7 +45,28 @@ module Sashimi
   def collect_concat
   end
 
-  def count
+  def count(*args)
+    found = 0
+    case args.size
+    when 0
+      if block_given?
+        each do |item|
+          found += 1 if yield(item)
+        end
+      else
+        each do |item|
+          found += 1
+        end
+      end
+    when 1
+      arg = args.first
+      each do |item|
+        found += 1 if item == arg
+      end
+    else
+      raise ArgumentError
+    end
+    return found
   end
 
   def cycle
