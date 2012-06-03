@@ -45,13 +45,13 @@ module SashimiFriday
   def collect_concat
   end
 
-  def count(*args)
+  def count(*args, &block)
     found = 0
     case args.size
     when 0
       if block_given?
         each do |item|
-          found += 1 if yield(item)
+          found += 1 if block.call(item)
         end
       else
         each do |item|
