@@ -1,29 +1,29 @@
 module SashimiFriday
-  def all?
-    each do |item|
-      return false unless block_given? ? yield(item) : item
+  def all?(&block)
+    each do |*item|
+      return false unless pick(item, &block)
     end
     return true
   end
 
-  def any?
-    each do |item|
-      return true if block_given? ? yield(item) : item
+  def any?(&block)
+    each do |*item|
+      return true if pick(item, &block)
     end
     return false
   end
 
-  def none?
-    each do |item|
-      return false if block_given? ? yield(item) : item
+  def none?(&block)
+    each do |*item|
+      return false if pick(item, &block)
     end
     return true
   end
 
-  def one?
+  def one?(&block)
     result = nil
-    each do |item|
-      if block_given? ? yield(item) : item
+    each do |*item|
+      if pick(item, &block)
         case result
         when nil
           result = true
