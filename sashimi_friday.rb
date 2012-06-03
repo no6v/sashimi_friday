@@ -80,9 +80,6 @@ module SashimiFriday
   def cycle
   end
 
-  def detect
-  end
-
   def drop
   end
 
@@ -107,8 +104,16 @@ module SashimiFriday
   def entries
   end
 
-  def find
+  def find(ifnone = nil, &block)
+    return enum_for(__method__, ifnone) unless block
+    each do |*item|
+      item = pick(item)
+      return item if block.call(item)
+    end
+    ifnone.call if ifnone
   end
+
+  alias detect find
 
   def find_all
   end
