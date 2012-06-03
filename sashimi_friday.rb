@@ -80,7 +80,36 @@ module SashimiFriday
   def cycle
   end
 
-  def drop
+  def drop(n)
+    results = []
+    begin
+      n = Integer(n)
+    rescue
+      raise TypeError
+    end
+    raise ArgumentError if n < 0
+    each do |*item|
+      next if (n = n.pred) >= 0
+      results << pick(item)
+    end
+    return results
+  end
+
+  def take(n)
+    results = []
+    begin
+      n = Integer(n)
+    rescue
+      raise TypeError
+    end
+    raise ArgumentError if n < 0
+    return results if n.zero?
+    each do |*item|
+      item = pick(item)
+      results << item
+      break if (n = n.pred) <= 0
+    end
+    return results
   end
 
   def drop_while
@@ -198,9 +227,6 @@ module SashimiFriday
   end
 
   def sort_by
-  end
-
-  def take
   end
 
   def take_while
