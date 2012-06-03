@@ -39,8 +39,16 @@ module SashimiFriday
   def chunk
   end
 
-  def collect
+  def collect(&block)
+    return enum_for(__method__) unless block
+    results = []
+    each do |*item|
+      results << pick(item, &block)
+    end
+    return results
   end
+
+  alias map collect
 
   def collect_concat
   end
@@ -134,9 +142,6 @@ module SashimiFriday
   end
 
   def lazy
-  end
-
-  def map
   end
 
   def max
