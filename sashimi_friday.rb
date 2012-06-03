@@ -195,4 +195,14 @@ module SashimiFriday
 
   def zip
   end
+
+  private
+
+  def pick(item, &block)
+    if block
+      block.call(*item)
+    else
+      item.size == 1 ? item.first : item
+    end
+  end
 end
