@@ -115,8 +115,17 @@ module SashimiFriday
 
   alias detect find
 
-  def find_all
+  def find_all(&block)
+    return enum_for(__method__) unless block
+    results = []
+    each do |*item|
+      item = pick(item)
+      results << item if block.call(item)
+    end
+    return results
   end
+
+  alias select find_all
 
   def find_index
   end
@@ -180,9 +189,6 @@ module SashimiFriday
   end
 
   def reverse_each
-  end
-
-  def select
   end
 
   def slice_before
