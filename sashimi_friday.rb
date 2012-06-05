@@ -77,7 +77,31 @@ module SashimiFriday
     return found
   end
 
-  def cycle
+  def cycle(*args, &block)
+    return enum_for(__method__, *args) unless block
+    raise ArgumentError if args.size > 1
+    n = args.first
+    unless n.nil?
+      begin
+        n = Integer(n)
+        return if n <= 0
+      rescue
+        raise TypeError
+      end
+    end
+    ary = []
+    each do |*item|
+      item = pick(item)
+      ary << item
+      block.call(item)
+    end
+    return if ary.empty?
+    (1...(n || Float::INFINITY)).each do
+      ary.each do |item|
+        block.call(item)
+      end
+    end
+    return nil
   end
 
   def drop(n)
