@@ -142,7 +142,13 @@ module SashimiFriday
   def each_cons
   end
 
-  def each_entry
+  def each_entry(*args, &block)
+    return enum_for(__method__, *args) unless block
+    each(*args) do |*item|
+      item = pick(item)
+      block.call(item)
+    end
+    return self
   end
 
   def each_slice
