@@ -154,7 +154,14 @@ module SashimiFriday
   def each_slice
   end
 
-  def each_with_index
+  def each_with_index(*args, &block)
+    return enum_for(__method__, *args) unless block
+    index = -1
+    each(*args) do |*item|
+      item = pick(item)
+      block.call(item, index = index.next)
+    end
+    return self
   end
 
   def each_with_object
