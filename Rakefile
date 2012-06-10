@@ -1,3 +1,4 @@
+require 'pathname'
 task default: :spec
 
 desc "prepare environment"
