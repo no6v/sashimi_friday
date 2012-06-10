@@ -218,6 +218,25 @@ module SashimiFriday
   end
 
   def max
+    _max = nil
+    init = false
+    each do |*item|
+      item = item.first if item.length == 1
+      unless init
+        _max = item
+        init = true
+        next
+      end
+
+      cmp = if block_given?
+              yield(item, _max)
+            else
+              item <=> _max
+            end
+      raise ArgumentError unless cmp
+      _max = item if cmp > 0
+    end
+    _max
   end
 
   def max_by
