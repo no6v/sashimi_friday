@@ -1,21 +1,27 @@
 module SashimiFriday
   def all?(&block)
     each do |*item|
-      return false unless pick(item, &block)
+      item = item.first if item.size == 1
+      item = block.call(*item) if block
+      return false unless item
     end
     return true
   end
 
   def any?(&block)
     each do |*item|
-      return true if pick(item, &block)
+      item = item.first if item.size == 1
+      item = block.call(*item) if block
+      return true if item
     end
     return false
   end
 
   def none?(&block)
     each do |*item|
-      return false if pick(item, &block)
+      item = item.first if item.size == 1
+      item = block.call(*item) if block
+      return false if item
     end
     return true
   end
@@ -23,7 +29,9 @@ module SashimiFriday
   def one?(&block)
     result = nil
     each do |*item|
-      if pick(item, &block)
+      item = item.first if item.size == 1
+      item = block.call(*item) if block
+      if item
         case result
         when nil
           result = true
@@ -43,7 +51,8 @@ module SashimiFriday
     return enum_for(__method__) unless block
     results = []
     each do |*item|
-      results << pick(item, &block)
+      item = item.first if item.size == 1
+      results << block.call(*item)
     end
     return results
   end
@@ -91,7 +100,7 @@ module SashimiFriday
     end
     ary = []
     each do |*item|
-      item = pick(item)
+      item = item.first if item.size == 1
       ary << item
       block.call(item)
     end
@@ -114,7 +123,8 @@ module SashimiFriday
     raise ArgumentError if n < 0
     each do |*item|
       next if (n = n.pred) >= 0
-      results << pick(item)
+      item = item.first if item.size == 1
+      results << item
     end
     return results
   end
@@ -129,7 +139,7 @@ module SashimiFriday
     raise ArgumentError if n < 0
     return results if n.zero?
     each do |*item|
-      item = pick(item)
+      item = item.first if item.size == 1
       results << item
       break if (n = n.pred) <= 0
     end
@@ -145,7 +155,7 @@ module SashimiFriday
   def each_entry(*args, &block)
     return enum_for(__method__, *args) unless block
     each(*args) do |*item|
-      item = pick(item)
+      item = item.first if item.size == 1
       block.call(item)
     end
     return self
@@ -158,7 +168,7 @@ module SashimiFriday
     return enum_for(__method__, *args) unless block
     index = -1
     each(*args) do |*item|
-      item = pick(item)
+      item = item.first if item.size == 1
       block.call(item, index = index.next)
     end
     return self
@@ -173,7 +183,7 @@ module SashimiFriday
   def find(ifnone = nil, &block)
     return enum_for(__method__, ifnone) unless block
     each do |*item|
-      item = pick(item)
+      item = item.first if item.size == 1
       return item if block.call(item)
     end
     ifnone.call if ifnone
@@ -185,7 +195,7 @@ module SashimiFriday
     return enum_for(__method__) unless block
     results = []
     each do |*item|
-      item = pick(item)
+      item = item.first if item.size == 1
       results << item if block.call(item)
     end
     return results
@@ -292,15 +302,5 @@ module SashimiFriday
   end
 
   def zip
-  end
-
-  private
-
-  def pick(item, &block)
-    if block
-      block.call(*item)
-    else
-      item.size == 1 ? item.first : item
-    end
   end
 end
