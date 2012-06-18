@@ -236,8 +236,25 @@ module SashimiFriday
   def include?
   end
 
-  def inject
+  def inject(*args, &block)
+    block = args.pop.to_proc if Symbol === args.last
+    unless args.empty?
+      result = args.shift
+      init = true
+    end
+    each do |*item|
+      item = item.first if item.size == 1
+      unless init
+        init = true
+        result = item
+        next
+      end
+      result = block.call(result, item)
+    end
+    return result
   end
+
+  alias reduce inject
 
   def lazy
   end
@@ -378,9 +395,6 @@ module SashimiFriday
       (block.call(item) ? ts : fs) << item
     end
     return ts, fs
-  end
-
-  def reduce
   end
 
   def reject(&block)
