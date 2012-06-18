@@ -233,8 +233,15 @@ module SashimiFriday
   def group_by
   end
 
-  def include?
+  def include?(val)
+    each do |*item|
+      item = item.first if item.size == 1
+      return true if item == val
+    end
+    return false
   end
+
+  alias member? include?
 
   def inject(*args, &block)
     block = args.pop.to_proc if Symbol === args.last
@@ -298,9 +305,6 @@ module SashimiFriday
       max = [value, item] if cmp > 0
     end
     return max && max[1]
-  end
-
-  def member?
   end
 
   def min(&block)
