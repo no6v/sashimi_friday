@@ -230,7 +230,14 @@ module SashimiFriday
     return result
   end
 
-  def group_by
+  def group_by(&block)
+    return enum_for(__method__) unless block
+    results = Hash.new{|h, k| h[k] = []}
+    each do |*item|
+      item = item.first if item.size == 1
+      results[block.call(item)] << item
+    end
+    return results
   end
 
   def include?(val)
