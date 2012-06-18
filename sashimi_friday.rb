@@ -282,7 +282,14 @@ module SashimiFriday
   def minmax_by
   end
 
-  def partition
+  def partition(&block)
+    return enum_for(__method__) unless block
+    ts, fs = [], []
+    each do |*item|
+      item = item.first if item.size == 1
+      (block.call(item) ? ts : fs) << item
+    end
+    return ts, fs
   end
 
   def reduce
