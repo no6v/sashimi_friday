@@ -161,7 +161,21 @@ module SashimiFriday
     return self
   end
 
-  def each_slice
+  def each_slice(n, &block)
+    return enum_for(__method__, n) unless block
+    n = n.to_int unless Integer === n
+    raise ArgumentError unless n > 0
+    list = []
+    each do |*item|
+      item = item.first if item.size == 1
+      list << item
+      if list.size == n
+        block.call(list.dup)
+        list.clear
+      end
+    end
+    block.call(list.dup) unless list.empty?
+    return nil
   end
 
   def each_with_index(*args, &block)
