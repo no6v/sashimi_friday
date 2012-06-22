@@ -174,7 +174,13 @@ module SashimiFriday
     return self
   end
 
-  def each_with_object
+  def each_with_object(obj, &block)
+    return enum_for(__method__, obj) unless block
+    each do |*item|
+      item = item.first if item.size == 1
+      block.call(item, obj)
+    end
+    return obj
   end
 
   def entries
