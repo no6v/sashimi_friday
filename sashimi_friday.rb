@@ -59,8 +59,17 @@ module SashimiFriday
 
   alias map collect
 
-  def collect_concat
+  def collect_concat(&block)
+    return enum_for(__method__) unless block
+    results = []
+    each do |*item|
+      item = item.first if item.size == 1
+      results << block.call(item)
+    end
+    return results.flatten(1)
   end
+
+  alias flat_map collect_concat
 
   def count(*args, &block)
     found = 0
@@ -279,9 +288,6 @@ module SashimiFriday
       break if n <= 0
     end
     return results if n
-  end
-
-  def flat_map
   end
 
   def grep(pattern)
