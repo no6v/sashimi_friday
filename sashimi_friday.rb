@@ -178,7 +178,15 @@ module SashimiFriday
   end
 
   def entries
+    results = []
+    each do |*item|
+      item = item.first if item.size == 1
+      results << item
+    end
+    return results
   end
+
+  alias to_a entries
 
   def find(ifnone = nil, &block)
     return enum_for(__method__, ifnone) unless block
@@ -295,10 +303,15 @@ module SashimiFriday
   def sort_by
   end
 
-  def take_while
-  end
-
-  def to_a
+  def take_while(&block)
+    return enum_for(__method__) unless block
+    results = []
+    each do |*item|
+      item = item.first if item.size == 1
+      break unless block.call(item)
+      results << item
+    end
+    return results
   end
 
   def zip(*lists, &block)
