@@ -288,7 +288,14 @@ module SashimiFriday
   def reduce
   end
 
-  def reject
+  def reject(&block)
+    return enum_for(__method__) unless block
+    results = []
+    each do |*item|
+      item = item.first if item.size == 1
+      results << item unless block.call(item)
+    end
+    return results
   end
 
   def reverse_each(&block)
