@@ -291,7 +291,17 @@ module SashimiFriday
   def reject
   end
 
-  def reverse_each
+  def reverse_each(&block)
+    return enum_for(__method__) unless block
+    items = []
+    each do |*item|
+      item = item.first if item.size == 1
+      items << item
+    end
+    until items.empty?
+      block.call(items.pop)
+    end
+    return self
   end
 
   def slice_before(*args, &block)
