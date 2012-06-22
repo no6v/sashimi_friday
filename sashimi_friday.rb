@@ -149,7 +149,18 @@ module SashimiFriday
   def drop_while
   end
 
-  def each_cons
+  def each_cons(n, &block)
+    return enum_for(__method__, n) unless block
+    n = n.to_int unless Integer === n
+    raise ArgumentError unless n > 0
+    list = []
+    each do |*item|
+      item = item.first if item.size == 1
+      list.shift if list.size == n
+      list.push(item)
+      block.call(list.dup) if list.size == n
+    end
+    return nil
   end
 
   def each_entry(*args, &block)
