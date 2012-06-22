@@ -211,7 +211,19 @@ module SashimiFriday
 
   alias select find_all
 
-  def find_index
+  def find_index(*args, &block)
+    if args.empty?
+      return enum_for(__method__, *args) unless block
+    else
+      obj = args.first
+    end
+    index = 0
+    each do |*item|
+      item = item.first if item.size == 1
+      return index if obj ? obj == item : block.call(*item)
+      index += 1
+    end
+    return nil
   end
 
   def first(*args)
