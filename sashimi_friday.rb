@@ -301,6 +301,24 @@ module SashimiFriday
   def to_a
   end
 
-  def zip
+  def zip(*lists, &block)
+    results = []
+    lists = lists.map do |list|
+      list = list.to_ary if list.respond_to?(:to_ary)
+      list.to_enum(:each)
+    end
+    each do |*item|
+      item = item.first if item.size == 1
+      items = [item]
+      lists.each do |list|
+        items << (list.next rescue nil)
+      end
+      if block
+        block.call(items)
+      else
+        results << items
+      end
+    end
+    return results unless block
   end
 end
