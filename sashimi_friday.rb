@@ -264,7 +264,23 @@ module SashimiFriday
     _max
   end
 
-  def max_by
+  def max_by(&block)
+    return enum_for(__method__) unless block
+    max = nil
+    init = false
+    each do |*item|
+      item = item.first if item.size == 1
+      value = block.call(item)
+      unless init
+        max = [value, item]
+        init = true
+        next
+      end
+      cmp = value <=> max[0]
+      raise ArgumentError unless cmp
+      max = [value, item] if cmp > 0
+    end
+    return max && max[1]
   end
 
   def member?
