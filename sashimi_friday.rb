@@ -270,7 +270,25 @@ module SashimiFriday
   def member?
   end
 
-  def min
+  def min(&block)
+    min = nil
+    init = false
+    each do |*item|
+      item = item.first if item.size == 1
+      unless init
+        min = item
+        init = true
+        next
+      end
+      cmp = if block
+              block.call(item, min)
+            else
+              item <=> min
+            end
+      raise ArgumentError unless cmp
+      min = item if cmp < 0
+    end
+    return min
   end
 
   def min_by(&block)
