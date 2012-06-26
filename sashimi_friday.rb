@@ -214,7 +214,28 @@ module SashimiFriday
   def find_index
   end
 
-  def first
+  def first(*args)
+    unless args.empty?
+      n = args.first
+      n = n.to_int if n.respond_to?(:to_int)
+      raise TypeError unless Numeric === n
+    end
+    if n
+      return [] if n == 0
+      raise ArgumentError if n < 0
+    end
+    results = []
+    each do |*item|
+      item = item.first if item.size == 1
+      if n
+        results << item
+      else
+        return item
+      end
+      n -= 1
+      break if n <= 0
+    end
+    return results if n
   end
 
   def flat_map
