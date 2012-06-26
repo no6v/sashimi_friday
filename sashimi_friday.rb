@@ -273,7 +273,23 @@ module SashimiFriday
   def min
   end
 
-  def min_by
+  def min_by(&block)
+    return enum_for(__method__) unless block
+    min = nil
+    init = false
+    each do |*item|
+      item = item.first if item.size == 1
+      value = block.call(item)
+      unless init
+        min = [value, item]
+        init = true
+        next
+      end
+      cmp = value <=> min[0]
+      raise ArgumentError unless cmp
+      min = [value, item] if cmp < 0
+    end
+    return min && min[1]
   end
 
   def minmax(&block)
