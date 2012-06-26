@@ -44,7 +44,30 @@ module SashimiFriday
     return result
   end
 
-  def chunk
+  def chunk(initial_state = nil, &block)
+    raise ArgumentError unless block
+    initial_state = initial_state.dup unless initial_state.nil?
+    results = []
+    each do |*item|
+      item = item.first if item.size == 1
+      args = [item]
+      args << initial_state unless initial_state.nil?
+      case state = block.call(*args)
+      when :_alone
+        results << [state, [item]]
+      when :_separator, nil
+        next
+      else
+        raise if Symbol === state and state.to_s.start_with?(?_)
+        previous_state, items = results.last
+        if previous_state == state and items
+          items << item
+        else
+          results << [state, [item]]
+        end
+      end
+    end
+    return results.to_enum(:each)
   end
 
   def collect(&block)
