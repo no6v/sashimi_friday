@@ -276,7 +276,27 @@ module SashimiFriday
   def min_by
   end
 
-  def minmax
+  def minmax(&block)
+    minmax = [nil, nil]
+    init = false
+    each do |*item|
+      item = item.first if item.size == 1
+      unless init
+        minmax = [item, item]
+        init = true
+        next
+      end
+      {0 => :<, 1 => :>}.each do |pos, op|
+        cmp = if block
+                block.call(item, minmax[pos])
+              else
+                item <=> minmax[pos]
+              end
+        raise ArgumentError unless cmp
+        minmax[pos] = item if cmp.__send__(op, 0)
+      end
+    end
+    return minmax
   end
 
   def minmax_by(&block)
