@@ -294,7 +294,30 @@ module SashimiFriday
   def reverse_each
   end
 
-  def slice_before
+  def slice_before(*args, &block)
+    if block
+      raise ArgumentError unless args.size < 2
+      initial_state = args.first
+      initial_state = initial_state.dup unless initial_state.nil?
+    else
+      raise ArgumentError unless args.size == 1
+      pattern = args.first
+    end
+    results = []
+    each do |*item|
+      item = item.first if item.size == 1
+      state = if block
+                args = [item]
+                args << initial_state unless initial_state.nil?
+                state = block.call(*args)
+              else
+                pattern === item
+              end
+      results << [] if state
+      last = results.last
+      last ? last << item : results << [item]
+    end
+    return results.to_enum(:each)
   end
 
   def sort
