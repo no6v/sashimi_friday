@@ -240,9 +240,9 @@ module SashimiFriday
     return obj
   end
 
-  def entries
+  def entries(*args)
     results = []
-    each do |*item|
+    each(*args) do |*item|
       item = item.first if item.size == 1
       results << item
     end
