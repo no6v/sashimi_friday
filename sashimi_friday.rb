@@ -279,7 +279,25 @@ module SashimiFriday
   def minmax
   end
 
-  def minmax_by
+  def minmax_by(&block)
+    return enum_for(__method__) unless block
+    minmax = [[nil, nil], [nil, nil]]
+    init = false
+    each do |*item|
+      item = item.first if item.size == 1
+      value = block.call(item)
+      unless init
+        minmax = [[value, item], [value, item]]
+        init = true
+        next
+      end
+      {0 => :<, 1 => :>}.each do |pos, op|
+        cmp = value <=> minmax[pos][0]
+        raise ArgumentError unless cmp
+        minmax[pos] = [value, item] if cmp.__send__(op, 0)
+      end
+    end
+    return minmax.map(&:last)
   end
 
   def partition(&block)
