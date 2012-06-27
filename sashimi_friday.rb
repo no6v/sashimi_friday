@@ -178,7 +178,20 @@ module SashimiFriday
     return results
   end
 
-  def drop_while
+  def drop_while(&block)
+    return enum_for(__method__) unless block
+    results = []
+    state = true
+    each do |*item|
+      item = item.first if item.size == 1
+      if state and block.call(item)
+        next
+      else
+        results << item
+        state = false
+      end
+    end
+    return results
   end
 
   def each_cons(n, &block)
