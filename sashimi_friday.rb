@@ -563,7 +563,32 @@ module SashimiFriday
     return results.to_enum(:each)
   end
 
-  def sort
+  def sort(&block)
+    results = []
+    init = false
+    each do |*item|
+      item = item.first if item.size == 1
+      unless init
+        results << item
+        init = true
+        next
+      end
+      index = results.find_index do |obj|
+        cmp = if block
+                block.call(item, obj)
+              else
+                item <=> obj
+              end
+        raise ArgumentError unless cmp
+        cmp <= 0
+      end
+      if index
+        results[index, 0] = item
+      else
+        results << item
+      end
+    end
+    return results
   end
 
   def sort_by
