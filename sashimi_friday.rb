@@ -591,7 +591,30 @@ module SashimiFriday
     return results
   end
 
-  def sort_by
+  def sort_by(&block)
+    return enum_for(__method__) unless block
+    results = []
+    init = false
+    each do |*item|
+      item = item.first if item.size == 1
+      value = block.call(item)
+      unless init
+        results << [value, item]
+        init = true
+        next
+      end
+      index = results.find_index do |obj|
+        cmp = value <=> obj.first
+        raise ArgumentError unless cmp
+        cmp <= 0
+      end
+      if index
+        results[index, 0] = [[value, item]]
+      else
+        results << [value, item]
+      end
+    end
+    return results.map(&:last)
   end
 
   def take_while(&block)
