@@ -209,6 +209,7 @@ module SashimiFriday
   end
 
   def each_entry(*args, &block)
+    raise ArgumentError if args.size == 1
     return enum_for(__callee__, *args) unless block
     each(*args) do |*item|
       item = item.first if item.size == 1
