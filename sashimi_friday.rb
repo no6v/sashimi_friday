@@ -71,7 +71,7 @@ module SashimiFriday
   end
 
   def collect(&block)
-    return enum_for(__method__) unless block
+    return enum_for(__callee__) unless block
     results = []
     each do |*item|
       item = item.first if item.size == 1
@@ -83,7 +83,7 @@ module SashimiFriday
   alias map collect
 
   def collect_concat(&block)
-    return enum_for(__method__) unless block
+    return enum_for(__callee__) unless block
     results = []
     each do |*item|
       item = item.first if item.size == 1
@@ -119,7 +119,7 @@ module SashimiFriday
   end
 
   def cycle(*args, &block)
-    return enum_for(__method__, *args) unless block
+    return enum_for(__callee__, *args) unless block
     raise ArgumentError if args.size > 1
     n = args.first
     unless n.nil?
@@ -179,7 +179,7 @@ module SashimiFriday
   end
 
   def drop_while(&block)
-    return enum_for(__method__) unless block
+    return enum_for(__callee__) unless block
     results = []
     state = true
     each do |*item|
@@ -195,7 +195,7 @@ module SashimiFriday
   end
 
   def each_cons(n, &block)
-    return enum_for(__method__, n) unless block
+    return enum_for(__callee__, n) unless block
     n = n.to_int unless Integer === n
     raise ArgumentError unless n > 0
     list = []
@@ -209,7 +209,7 @@ module SashimiFriday
   end
 
   def each_entry(*args, &block)
-    return enum_for(__method__, *args) unless block
+    return enum_for(__callee__, *args) unless block
     each(*args) do |*item|
       item = item.first if item.size == 1
       block.call(item)
@@ -218,7 +218,7 @@ module SashimiFriday
   end
 
   def each_slice(n, &block)
-    return enum_for(__method__, n) unless block
+    return enum_for(__callee__, n) unless block
     n = n.to_int unless Integer === n
     raise ArgumentError unless n > 0
     list = []
@@ -235,7 +235,7 @@ module SashimiFriday
   end
 
   def each_with_index(*args, &block)
-    return enum_for(__method__, *args) unless block
+    return enum_for(__callee__, *args) unless block
     index = -1
     each(*args) do |*item|
       item = item.first if item.size == 1
@@ -245,7 +245,7 @@ module SashimiFriday
   end
 
   def each_with_object(obj, &block)
-    return enum_for(__method__, obj) unless block
+    return enum_for(__callee__, obj) unless block
     each do |*item|
       item = item.first if item.size == 1
       block.call(item, obj)
@@ -265,7 +265,7 @@ module SashimiFriday
   alias to_a entries
 
   def find(ifnone = nil, &block)
-    return enum_for(__method__, ifnone) unless block
+    return enum_for(__callee__, ifnone) unless block
     each do |*item|
       item = item.first if item.size == 1
       return item if block.call(item)
@@ -276,7 +276,7 @@ module SashimiFriday
   alias detect find
 
   def find_all(&block)
-    return enum_for(__method__) unless block
+    return enum_for(__callee__) unless block
     results = []
     each do |*item|
       item = item.first if item.size == 1
@@ -289,7 +289,7 @@ module SashimiFriday
 
   def find_index(*args, &block)
     if args.empty?
-      return enum_for(__method__, *args) unless block
+      return enum_for(__callee__, *args) unless block
     else
       obj = args.first
     end
@@ -337,7 +337,7 @@ module SashimiFriday
   end
 
   def group_by(&block)
-    return enum_for(__method__) unless block
+    return enum_for(__callee__) unless block
     results = Hash.new{|h, k| h[k] = []}
     each do |*item|
       item = item.first if item.size == 1
@@ -402,7 +402,7 @@ module SashimiFriday
   end
 
   def max_by(&block)
-    return enum_for(__method__) unless block
+    return enum_for(__callee__) unless block
     max = nil
     init = false
     each do |*item|
@@ -442,7 +442,7 @@ module SashimiFriday
   end
 
   def min_by(&block)
-    return enum_for(__method__) unless block
+    return enum_for(__callee__) unless block
     min = nil
     init = false
     each do |*item|
@@ -484,7 +484,7 @@ module SashimiFriday
   end
 
   def minmax_by(&block)
-    return enum_for(__method__) unless block
+    return enum_for(__callee__) unless block
     minmax = [[nil, nil], [nil, nil]]
     init = false
     each do |*item|
@@ -505,7 +505,7 @@ module SashimiFriday
   end
 
   def partition(&block)
-    return enum_for(__method__) unless block
+    return enum_for(__callee__) unless block
     ts, fs = [], []
     each do |*item|
       item = item.first if item.size == 1
@@ -515,7 +515,7 @@ module SashimiFriday
   end
 
   def reject(&block)
-    return enum_for(__method__) unless block
+    return enum_for(__callee__) unless block
     results = []
     each do |*item|
       item = item.first if item.size == 1
@@ -525,7 +525,7 @@ module SashimiFriday
   end
 
   def reverse_each(&block)
-    return enum_for(__method__) unless block
+    return enum_for(__callee__) unless block
     items = []
     each do |*item|
       item = item.first if item.size == 1
@@ -592,7 +592,7 @@ module SashimiFriday
   end
 
   def sort_by(&block)
-    return enum_for(__method__) unless block
+    return enum_for(__callee__) unless block
     results = []
     init = false
     each do |*item|
@@ -618,7 +618,7 @@ module SashimiFriday
   end
 
   def take_while(&block)
-    return enum_for(__method__) unless block
+    return enum_for(__callee__) unless block
     results = []
     each do |*item|
       item = item.first if item.size == 1
