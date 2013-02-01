@@ -584,7 +584,7 @@ module SashimiFriday
         cmp <= 0
       end
       if index
-        results[index, 0] = item
+        results[index, 0] = [item]
       else
         results << item
       end
