@@ -574,14 +574,17 @@ module SashimiFriday
         init = true
         next
       end
-      index = results.find_index do |obj|
+      index = nil
+      results.each do |obj|
+        index ||= 0
         cmp = if block
                 block.call(item, obj)
               else
                 item <=> obj
               end
         raise ArgumentError unless cmp
-        cmp <= 0
+        break if cmp <= 0
+        index += 1
       end
       if index
         results[index, 0] = [item]
@@ -604,10 +607,13 @@ module SashimiFriday
         init = true
         next
       end
-      index = results.find_index do |obj|
+      index = nil
+      results.each do |obj|
+        index ||= 0
         cmp = value <=> obj.first
         raise ArgumentError unless cmp
-        cmp <= 0
+        break if cmp <= 0
+        index += 1
       end
       if index
         results[index, 0] = [[value, item]]
